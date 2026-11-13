@@ -1,0 +1,43 @@
+Set-Location 'C:\Users\devad\Downloads\DevOps Labortary\Experiment-07-Kubernetes-Python' # Open the experiment folder
+
+$DockerHubUser = Read-Host 'Docker Hub username used in Experiment 2' # Select the public Flask image published in Experiment 2
+
+(Get-Content -Raw python-deployment.yaml) -replace 'image: .*flask-docker-app:latest', "image: ${DockerHubUser}/flask-docker-app:latest" | Set-Content -Encoding ascii python-deployment.yaml # Set the image owner in the deployment
+
+minikube start --driver=docker # Start the Kubernetes cluster
+
+kubectl get nodes # Verify the cluster node
+
+kubectl apply -f python-deployment.yaml # Create the two-replica Python deployment
+
+kubectl apply -f python-service.yaml # Create the NodePort service
+
+kubectl rollout status deployment/python-web --timeout=180s # Wait for healthy replicas
+
+kubectl get deployments # Show deployment status
+
+kubectl get pods # Show the Python pods
+
+kubectl describe deployment python-web # Inspect the deployment
+
+kubectl get svc # Show the service and ports
+
+Start-Process powershell.exe -ArgumentList '-NoExit', '-Command', 'minikube service python-web --url' # Display the NodePort URL in a separate window; keep it open and browse the printed URL
+
+Start-Process powershell.exe -ArgumentList '-NoExit', '-Command', 'kubectl port-forward svc/python-web 5000:5000' # Forward the service in a separate window; keep it open
+
+curl.exe --retry 10 --retry-connrefused --retry-delay 2 http://localhost:5000 # Verify the Flask page
+
+Start-Process 'http://localhost:5000' # View the deployed Python app
+
+Read-Host 'Press Enter after viewing the application' # Wait before the scaling demo
+
+kubectl scale deployment python-web --replicas=4 # Scale to four replicas
+
+kubectl rollout status deployment/python-web --timeout=180s # Wait for scaling
+
+kubectl get pods # Show four replicas
+
+Read-Host 'Press Enter to clean up the deployment and service' # Pause before cleanup
+
+kubectl delete -f python-service.yaml -f python-deployment.yaml # Remove the experiment resources

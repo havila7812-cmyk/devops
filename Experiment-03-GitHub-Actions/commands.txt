@@ -1,0 +1,49 @@
+Set-Location 'C:\Users\devad\Downloads\DevOps Labortary\Experiment-03-GitHub-Actions' # Open the experiment folder
+
+py -m venv .venv # Create an isolated Python environment
+
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt # Install test dependencies
+
+.\.venv\Scripts\python.exe -m pytest -q # Run the application tests
+
+.\.venv\Scripts\python.exe app.py # Run the Python application
+
+docker build -t python-ci-lab . # Build the application image
+
+docker run --rm python-ci-lab # Run and remove the application container
+
+Start-Process 'https://github.com/new' # Create an empty repository named python-ci-docker-lab without a README
+
+Read-Host 'Press Enter after creating the empty repository' # Wait for repository creation
+
+Start-Process 'https://hub.docker.com/settings/security' # Create a Docker Hub access token with Read and Write permissions
+
+Start-Process "https://github.com/$GitHubUser/python-ci-docker-lab/settings/secrets/actions" # Add DOCKERHUB_USERNAME and DOCKERHUB_TOKEN repository secrets
+
+Read-Host 'Press Enter after adding both repository secrets' # Wait for pipeline credentials
+
+git init # Initialize this experiment's repository
+
+git config user.name "$GitHubUser" # Set the author name
+
+git config user.email "$GitEmail" # Set the author email
+
+git add . # Stage the app, tests, Dockerfile and workflow
+
+git commit -m "init lab" # Commit the CI project
+
+git branch -M main # Set the workflow trigger branch
+
+git remote add origin "https://github.com/$GitHubUser/python-ci-docker-lab.git" # Connect the GitHub repository
+
+git push -u origin main # Trigger the CI pipeline
+
+Start-Process "https://github.com/$GitHubUser/python-ci-docker-lab/actions" # Verify that all pipeline steps succeed
+
+Read-Host 'Press Enter after the workflow succeeds' # Wait for the published image
+
+docker login -u "dva15" # Authenticate to retrieve the published image
+
+docker pull "dva15/python-ci-lab:latest" # Pull the CI-built image
+
+docker run --rm "dva15/python-ci-lab:latest" # Verify the CI-built application

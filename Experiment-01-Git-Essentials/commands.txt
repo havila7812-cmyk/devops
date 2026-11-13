@@ -1,0 +1,41 @@
+Set-Location 'C:\Users\devad\Downloads\DevOps Labortary\Experiment-01-Git-Essentials' # Open the experiment folder
+
+git --version # Check Git
+
+
+
+git init # Initialize this experiment's repository
+
+git config user.name "$GitHubUser" # Set the author name
+
+git config user.email "$GitEmail" # Set the author email
+
+git add README.md # Stage the README
+
+git commit -m "Initial commit of the project" # Commit the project
+
+git branch -M main # Name the main branch
+
+Read-Host 'Press Enter after creating the empty repository' # Wait for repository creation
+
+git remote add origin https://github.com/deva-nandhana15/Git-Essentials-Lab.git
+
+git push -u origin main # Publish main before adding feature work
+
+git checkout -b feature/new-feature # Create and switch to the feature branch
+
+Add-Content README.md 'feature work' # Add the feature
+
+git commit -am "Add feature work" # Commit the feature
+
+git push -u origin feature/new-feature # Publish the feature before merging
+
+merge the branches in git (pull request).
+
+git checkout main # Switch to main
+
+git merge feature/new-feature # Demonstrate the local feature merge
+
+git pull origin main # Synchronize the GitHub merge
+
+git log --oneline --graph --all # Show commit and branch history

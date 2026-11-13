@@ -1,0 +1,24 @@
+name: ci-dockerhub
+on:
+  push:
+    branches: [main]
+jobs:
+  build-test-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies and run tests
+        run: |
+          pip install -r requirements.txt
+          python -m pytest -q
+      - name: Build and push image
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+          docker build -t "$DOCKERHUB_USERNAME/python-ci-lab:latest" .
+          docker push "$DOCKERHUB_USERNAME/python-ci-lab:latest"

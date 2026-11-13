@@ -1,0 +1,35 @@
+docker --version # Check Docker
+
+docker info # Check the Docker Desktop Linux engine
+
+Get-ChildItem # Check application files and the Dockerfile filename
+
+docker build -t flask-docker-app . # Build the Flask image
+
+docker images # List images
+
+docker run -d -p 5000:5000 --name flask-docker-app flask-docker-app # Run the Flask container
+
+docker ps # Show the running container
+
+docker logs flask-docker-app # Check application startup
+
+# Sign in using a Docker Hub access token
+docker login -u dva15
+
+
+docker tag flask-docker-app "dva15/flask-docker-app:latest" # Tag the image for Docker Hub
+
+docker push "dva15/flask-docker-app:latest"   # Publish the image
+
+docker rm -f flask-docker-app # Remove the local test container
+
+docker rmi "dva15/flask-docker-app:latest" # Remove the registry tag locally
+
+docker pull "dva15/flask-docker-app:latest" # Retrieve the published image
+
+docker run -d -p 5000:5000 --name flask-docker-app "dva15/flask-docker-app:latest" # Run the registry image
+
+curl.exe --retry 10 --retry-connrefused --retry-delay 2 http://localhost:5000 # Verify the registry image
+
+docker rm -f flask-docker-app # Clean up the container and free port 5000

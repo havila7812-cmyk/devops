@@ -1,0 +1,67 @@
+Set-Location 'C:\Users\devad\Downloads\DevOps Labortary\Experiment-06-Kubernetes-CLI' # Open the experiment folder
+
+kubectl version --client # Check kubectl
+
+minikube version # Check minikube
+
+minikube start --driver=docker # Start the Kubernetes cluster
+
+kubectl get nodes # Verify the cluster node
+
+kubectl run nginx-pod --image=nginx --port=80 # Create an nginx pod using the CLI
+
+kubectl wait --for=condition=Ready pod/nginx-pod --timeout=180s # Wait for the pod
+
+kubectl get pods # Show pod status
+
+kubectl describe pod nginx-pod # Inspect the pod
+
+Start-Process powershell.exe -ArgumentList '-NoExit', '-Command', 'kubectl port-forward pod/nginx-pod 8082:80' # Forward the pod in a separate window; keep it open
+
+curl.exe --retry 10 --retry-connrefused --retry-delay 2 http://localhost:8082 # Verify nginx
+
+Start-Process 'http://localhost:8082' # View the nginx page
+
+Read-Host 'Press Enter after viewing the pod page' # Wait before removing the pod
+
+kubectl delete pod nginx-pod # Remove the CLI-created pod
+
+kubectl apply -f nginx-pod.yaml # Create the same pod using the supplied YAML
+
+kubectl wait --for=condition=Ready pod/nginx-pod --timeout=180s # Verify the YAML-created pod
+
+kubectl delete -f nginx-pod.yaml # Remove the YAML-created pod
+
+kubectl create deployment my-nginx --image=nginx # Create a managed deployment
+
+kubectl rollout status deployment/my-nginx --timeout=180s # Wait for the initial rollout before updating
+
+kubectl scale deployment my-nginx --replicas=3 # Scale to three replicas
+
+kubectl rollout status deployment/my-nginx --timeout=180s # Wait for the scaled deployment
+
+kubectl get deployments # Show deployment replicas
+
+kubectl get pods # Show the managed pods
+
+kubectl set image deployment/my-nginx nginx=nginx:1.25 # Perform a rolling image update
+
+kubectl rollout status deployment/my-nginx --timeout=180s # Wait for the update
+
+kubectl rollout history deployment/my-nginx # Show rollout revisions
+
+kubectl rollout undo deployment/my-nginx # Roll back the image update
+
+kubectl rollout status deployment/my-nginx --timeout=180s # Wait for the rollback
+
+kubectl expose deployment my-nginx --type=NodePort --port=80 # Expose the deployment
+
+kubectl get svc # Show the service
+
+Start-Process powershell.exe -ArgumentList '-NoExit', '-Command', 'minikube service my-nginx --url' # Display the NodePort URL in a separate window; keep it open and browse the printed URL
+
+Read-Host 'Press Enter after viewing the service page' # Wait before cleanup
+
+kubectl delete svc my-nginx # Delete the service
+
+kubectl delete deployment my-nginx # Delete the deployment

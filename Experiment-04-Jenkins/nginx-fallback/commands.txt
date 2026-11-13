@@ -1,0 +1,11 @@
+Set-Location 'C:\Users\devad\Downloads\DevOps Labortary\Experiment-04-Jenkins\nginx-fallback' # Open the static-site Docker alternative
+
+docker build -t static-site . # Build the nginx site image
+
+docker run -d -p 8081:80 --name static-site static-site # Serve the static site
+
+curl.exe --retry 10 --retry-connrefused --retry-delay 2 http://localhost:8081 # Verify the site
+
+Start-Process 'http://localhost:8081' # Open the static site
+
+docker rm -f static-site # Clean up the site container
